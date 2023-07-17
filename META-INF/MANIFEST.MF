@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: bbs
+Bundle-SymbolicName: bbs
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: bbs.jar,
+ YONSAI/Downloads/jstl-1.2.jar
+Automatic-Module-Name: bbs
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: controller,
+ db,
+ entity
