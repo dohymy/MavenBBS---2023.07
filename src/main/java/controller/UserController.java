@@ -2,7 +2,6 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,9 +42,9 @@ public class UserController extends HttpServlet {
 		
 		RequestDispatcher rd = null;
 		User user = null;
+		String uid = null, pwd = null, pwd2 = null, uname = null, email = null, addr = null;
 		String filename = null;
 		Part filePart = null;
-		String uid = null, pwd=null, pwd2=null, uname=null, email=null, addr=null;
 		switch (action) {
 		case "list":
 			String page_ = request.getParameter("page");
@@ -81,11 +80,20 @@ public class UserController extends HttpServlet {
 					session.setAttribute("profile", user.getProfile());
 					
 					// 환영 메세지
-					response.sendRedirect("/bbs/user/list?page=1");
+					request.setAttribute("msg", user.getUname() + "님 환영합니다.");
+					request.setAttribute("url", "/bbs/user/list?page=1");
+					rd = request.getRequestDispatcher("/WEB-INF/view/user/alertMsg.jsp");
+					rd.forward(request, response);
 				} else if (result == UserService.WRONG_PASSWORD) {
-					response.sendRedirect("/bbs/user/login");
+					request.setAttribute("msg", "잘못된 패스워드입니다. 다시 입력하세요.");
+					request.setAttribute("url", "/bbs/user/login");
+					rd = request.getRequestDispatcher("/WEB-INF/view/user/alertMsg.jsp");
+					rd.forward(request, response);
 				} else {		// UID_NOT_EXIST
-					response.sendRedirect("/bbs/user/login");
+					request.setAttribute("msg", "ID가 없습니다. 회원가입 페이지로 이동합니다.");
+					request.setAttribute("url", "/bbs/user/register");
+					rd = request.getRequestDispatcher("/WEB-INF/view/user/alertMsg.jsp");
+					rd.forward(request, response);
 				}
 			}
 			break;
@@ -102,34 +110,35 @@ public class UserController extends HttpServlet {
 				filePart = request.getPart("profile");
 				addr = request.getParameter("addr");
 				
-				
-				if (filePart != null) {
+				try {
 					filename = filePart.getSubmittedFileName();
 					int dotPosition = filename.indexOf(".");
 					String firstPart = filename.substring(0, dotPosition);
 					filename = filename.replace(firstPart, uid);
 					filePart.write(PROFILE_PATH + filename);
+				} catch (Exception e) {
+					System.out.println("프로필 사진을 입력하지 않았습니다.");
 				}
 				
 				// uid가 중복 --> 등록 화면
 				if (uDao.getUser(uid) != null) {
-					System.out.println("사용자 ID가 중복되었습니다.");
 					request.setAttribute("msg", "사용자 ID가 중복되었습니다.");
 					request.setAttribute("url", "/bbs/user/register");
-					rd = request.getRequestDispatcher("/WEB-INF/view/common/alertMsg.jsp");
+					rd = request.getRequestDispatcher("/WEB-INF/view/user/alertMsg.jsp");
 					rd.forward(request, response);
 				} else if (!pwd.equals(pwd2)) { 	// pwd != pwd2 --> 등록 화면
-					System.out.println("패스워드 입력이 잘못되었습니다.");
 					request.setAttribute("msg", "패스워드 입력이 잘못되었습니다.");
 					request.setAttribute("url", "/bbs/user/register");
-					rd = request.getRequestDispatcher("/WEB-INF/view/common/alertMsg.jsp");
+					rd = request.getRequestDispatcher("/WEB-INF/view/user/alertMsg.jsp");
 					rd.forward(request, response);
 				} else {
 					String hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
 					user = new User(uid, hashedPwd, uname, email, filename, addr);
-					System.out.println(user);
 					uDao.insertUser(user);
-					response.sendRedirect("/bbs/user/login");
+					request.setAttribute("msg", "등록을 마쳤습니다. 로그인하세요.");
+					request.setAttribute("url", "/bbs/user/login");
+					rd = request.getRequestDispatcher("/WEB-INF/view/user/alertMsg.jsp");
+					rd.forward(request, response);
 				}
 			}
 			break;
@@ -137,7 +146,6 @@ public class UserController extends HttpServlet {
 			session.invalidate();
 			response.sendRedirect("/bbs/user/login");
 			break;
-			
 		case "update":
 			if (request.getMethod().equals("GET")) {
 				uid = request.getParameter("uid");
@@ -145,7 +153,7 @@ public class UserController extends HttpServlet {
 				request.setAttribute("user", user);
 				rd = request.getRequestDispatcher("/WEB-INF/view/user/update.jsp");
 				rd.forward(request, response);
-			}else {
+			} else {
 				uid = request.getParameter("uid");
 				String oldFilename = request.getParameter("filename");
 				uname = request.getParameter("uname");
@@ -171,22 +179,18 @@ public class UserController extends HttpServlet {
 				response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
 			}
 			break;
-			
 		case "delete":
 			uid = request.getParameter("uid");
 			rd = request.getRequestDispatcher("/WEB-INF/view/user/delete.jsp?uid=" + uid);
 			rd.forward(request, response);
 			break;
-		
 		case "deleteConfirm":
 			uid = request.getParameter("uid");
 			uDao.deleteUser(uid);
 			response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
 			break;
-			
 		default:
-			System.out.println(request.getRequestURI() + "잘못된 경로입니다.");
-			
+			System.out.println(request.getRequestURI() + " 잘못된 경로입니다.");
 		}
 	}
 
