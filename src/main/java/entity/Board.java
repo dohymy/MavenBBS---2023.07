@@ -1,28 +1,29 @@
 package entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Board {
 	private int bid;
 	private String uid;
 	private String title;
 	private String content;
-	private LocalDate modTime;
+	private LocalDateTime modTime;
 	private int viewCount;
 	private int replyCount;
 	private int isDeleted;
 	private String files;
-	private String uname; // users table과 join한 결과를 받기 위함
+	private String uname;		// users table과 join한 결과를 받기 위해 추가
+	
 	// 기본 생성자
-	public Board() { } 
-	// 게시글 작성 시 필요한 생성자
+	public Board() { }
+	// 게시글 생성시 필요한 생성자
 	public Board(String uid, String title, String content, String files) {
 		this.uid = uid;
 		this.title = title;
 		this.content = content;
 		this.files = files;
 	}
-	// 게시글 수정 시 필요한 생성자
+	// 게시글 수정시 필요한 생성자
 	public Board(int bid, String uid, String title, String content, String files) {
 		this.bid = bid;
 		this.uid = uid;
@@ -31,7 +32,8 @@ public class Board {
 		this.files = files;
 	}
 	// 게시글 목록 조회시 필요한 생성자
-	public Board(int bid, String title, LocalDate modTime, int viewCount, int replyCount, String files, String unmae) {
+	public Board(int bid, String title, LocalDateTime modTime, int viewCount, int replyCount, String files,
+			String uname) {
 		this.bid = bid;
 		this.title = title;
 		this.modTime = modTime;
@@ -40,8 +42,8 @@ public class Board {
 		this.files = files;
 		this.uname = uname;
 	}
-	public Board(int bid, String uid, String title, String content, LocalDate modTime, int viewCount, int replyCount,
-			int isDeleted, String files, String unmae) {
+	public Board(int bid, String uid, String title, String content, LocalDateTime modTime, int viewCount,
+			int replyCount, int isDeleted, String files, String uname) {
 		this.bid = bid;
 		this.uid = uid;
 		this.title = title;
@@ -53,6 +55,14 @@ public class Board {
 		this.files = files;
 		this.uname = uname;
 	}
+	
+	@Override
+	public String toString() {
+		return "Board [bid=" + bid + ", uid=" + uid + ", title=" + title + ", content=" + content + ", modTime="
+				+ modTime + ", viewCount=" + viewCount + ", replyCount=" + replyCount + ", isDeleted=" + isDeleted
+				+ ", files=" + files + ", uname=" + uname + "]";
+	}
+	
 	public int getBid() {
 		return bid;
 	}
@@ -77,10 +87,10 @@ public class Board {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public LocalDate getModTime() {
+	public LocalDateTime getModTime() {
 		return modTime;
 	}
-	public void setModTime(LocalDate modTime) {
+	public void setModTime(LocalDateTime modTime) {
 		this.modTime = modTime;
 	}
 	public int getViewCount() {
@@ -113,6 +123,4 @@ public class Board {
 	public void setUname(String uname) {
 		this.uname = uname;
 	}
-	
-	
 }

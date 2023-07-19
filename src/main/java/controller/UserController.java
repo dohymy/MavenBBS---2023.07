@@ -81,7 +81,7 @@ public class UserController extends HttpServlet {
 					
 					// 환영 메세지
 					request.setAttribute("msg", user.getUname() + "님 환영합니다.");
-					request.setAttribute("url", "/bbs/user/list?page=1");
+					request.setAttribute("url", "/bbs/board/list?p=1&f=&q=");
 					rd = request.getRequestDispatcher("/WEB-INF/view/user/alertMsg.jsp");
 					rd.forward(request, response);
 				} else if (result == UserService.WRONG_PASSWORD) {
@@ -173,9 +173,13 @@ public class UserController extends HttpServlet {
 				} catch (Exception e) {
 					System.out.println("프로필 사진을 변경하지 않았습니다.");
 				}
-				filename = (filename == null) ? oldFilename : filename;
+				filename = (filename == null || filename.equals("")) ? oldFilename : filename;
 				user = new User(uid, uname, email, filename, addr);
 				uDao.updateUser(user);
+				session.setAttribute("uname", uname);
+				session.setAttribute("email", email);
+				session.setAttribute("addr", addr);
+				session.setAttribute("profile", filename);
 				response.sendRedirect("/bbs/user/list?page=" + session.getAttribute("currentUserPage"));
 			}
 			break;
