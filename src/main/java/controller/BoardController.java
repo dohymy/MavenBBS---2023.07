@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import db.BoardDao;
+import db.ReplyDao;
 import entity.Board;
+import entity.Reply;
 
 /**
  * Servlet implementation class BoardController
@@ -29,6 +31,7 @@ import entity.Board;
 public class BoardController extends HttpServlet {
 	public static final int LIST_PER_PAGE = 10;
 	public static final int PAGE_PER_SCREEN = 10;
+	public static final String UPLOAD_DIR = "c:/Temp/upload/";
 	
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String[] uri = request.getRequestURI().split("/");
@@ -38,9 +41,11 @@ public class BoardController extends HttpServlet {
 		session.setAttribute("menu", "board");
 		
 		BoardDao bDao = new BoardDao();
+		ReplyDao rDao = new ReplyDao();
+		
 		RequestDispatcher rd = null;
 		int bid = 0, page = 0;
-		String title = null, content = null, files = null;
+		String title = null, content = null, files = null, uid = null;
 		Board board = null;
 		
 		switch (action) {
@@ -78,6 +83,21 @@ public class BoardController extends HttpServlet {
 			
 			break;
 			
+		case "detail":
+			bid = Integer.parseInt(request.getParameter("bid"));
+			uid = request.getParameter("uid");
+			String option = request.getParameter("option");
+			// 본인이 조회한 경우 및 댓글 작성 후 조회수 증가 XX
+			if (!uid.equals(sessionUid)) 
+				bDao.increaseViewCount(bid);
+			board = bDao.getBoard(bid);
+			request.setAttribute("board", board);
+			List<Reply> replyList = rDao.getReplyList(bid);
+			request.setAttribute("replyList", replyList);
+			rd = request.getRequestDispatcher("/WEB-INF/view/board/detail.jsp");
+			rd.forward(request, response);
+			break;
+		
 		case "write":
 			if (request.getMethod().equals("GET")) {
 				rd = request.getRequestDispatcher("/WEB-INF/view/board/write.jsp");
@@ -85,12 +105,14 @@ public class BoardController extends HttpServlet {
 			} else {
 				title = request.getParameter("title");
 				content = request.getParameter("content");
+				
+				
 				board = new Board(sessionUid, title, content, files);
 				bDao.insertBoard(board);
 				response.sendRedirect("/bbs/board/list?p=1&f=&q=");
 			}
 			break;
-
+		//https://repo1.maven.org/maven2/org/json/json/20230618/
 		default:
 			break;
 		}
