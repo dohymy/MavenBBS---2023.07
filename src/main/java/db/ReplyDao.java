@@ -26,27 +26,26 @@ public class ReplyDao {
 		return conn;
 	}
 	
-	public List<Reply> getReplyList(int bid){
+	public List<Reply> getReplyList(int bid) {
 		List<Reply> list = new ArrayList<Reply>();
 		Connection conn = getConnection();
-		String sql = "SELECT r.rid, r.`comment`, r.regTime, r.isMine, r.uid, r.bid, u.uname "
-				+ "FROM reply AS r JOIN users AS u "
-				+ "ON r.uid=u.uid WHERE r.bid=?";
+		String sql = "SELECT r.rid, r.comment, r.regTime, r.isMine, r.uid, r.bid, u.uname FROM reply AS r "
+				+ "	JOIN users AS u ON r.uid=u.uid WHERE r.bid=?";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, bid);
+			
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				Reply r = new Reply(rs.getInt(1), rs.getString(2), 
+				Reply reply = new Reply(rs.getInt(1), rs.getString(2), 
 						LocalDateTime.parse(rs.getString(3).replace(" ", "T")),
 						rs.getInt(4), rs.getString(5), rs.getInt(6), rs.getString(7));
-				list.add(r);
+				list.add(reply);
 			}
 			rs.close(); pstmt.close(); conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return list;
 	}
 	
@@ -59,6 +58,7 @@ public class ReplyDao {
 			pstmt.setInt(2, reply.getIsMine());
 			pstmt.setString(3, reply.getUid());
 			pstmt.setInt(4, reply.getBid());
+			
 			pstmt.executeUpdate();
 			pstmt.close(); conn.close();
 		} catch (Exception e) {

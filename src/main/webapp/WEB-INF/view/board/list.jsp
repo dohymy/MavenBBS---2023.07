@@ -10,10 +10,10 @@
 		td, th	{ text-align: center; }
 	</style>
 	<script>
-		function search(){
+		function search() {
 			const field = $('#field').val();
 			const query = $('#query').val();
-			// console.log("search()", field, query);
+			//console.log("search()", field, query);
 			location.href = '/bbs/board/list?p=${currentBoardPage}&f=' + field + '&q=' + query;
 		}
 	</script>
@@ -37,10 +37,10 @@
                             </h3>
                         </td>
                         <td class="col-2">
-                            <select class="form-select me-2" id="field">
-                                <option value="title" ${field eq 'title' ? selected : '' }>제목</option>
-                                <option value="content" ${field eq 'content' ? selected : '' }>본문</option>
-                                <option value="uname" ${field eq 'uname' ? selected : '' }>글쓴이</option>
+                            <select class="form-select me-2" id="field"">
+                                <option value="title" ${field eq 'title' ? 'selected' : '' }>제목</option>
+                                <option value="content" ${field eq 'content' ? 'selected' : '' }>본문</option>
+                                <option value="uname" ${field eq 'uname' ? 'selected' : '' }>글쓴이</option>
                             </select>
                         </td>
                         <td class="col-3">
@@ -52,7 +52,7 @@
                     </tr>
                 </table>
         		<hr>
-        		<table class="table mt-2" style="margin-bottom: 50px;">
+        		<table class="table mt-2">
         			<tr class="table-secondary">
         				<th style="width: 10%;">ID</th>
         				<th style="width: 50%;">제목</th>
@@ -90,22 +90,22 @@
         		</table>
         		<ul class="pagination justify-content-center mt-4">
         		<c:if test="${currentBoardPage gt 10}">
-        			<li class="page-item"><a class="page-link" href="/bbs/board/list?p=${startPage-1}&f=${field}&q=${query}">&laquo;</a></li>        
+        			<li class="page-item"><a class="page-link" href="/bbs/board/list?p=${startPage-1}&f=${field}&q=${query}">&laquo;</a></li>
         		</c:if>
         		<c:if test="${currentBoardPage le 10}">
-        			<li class="page-item"><a class="page-link" href="#">&laquo;</a></li>        
+        			<li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
         		</c:if>
-                <c:forEach var="page" items="${pageList}">
-                	<li class="page-item ${(currentBoardPage eq page) ? 'active' : ''}">
-                		<a class="page-link" href="/bbs/board/list?p=${page}&f=${field}&q=${query}">${page}</a>
-                	</li>
-                </c:forEach>
-                <c:if test="${totalPages gt endPage}">
+				<c:forEach var="page" items="${pageList}">
+					<li class="page-item ${(currentBoardPage eq page) ? 'active' : ''}">
+						<a class="page-link" href="/bbs/board/list?p=${page}&f=${field}&q=${query}">${page}</a>
+					</li>
+				</c:forEach>
+				<c:if test="${totalPages gt endPage}">
                     <li class="page-item"><a class="page-link" href="/bbs/board/list?p=${endPage+1}&f=${field}&q=${query}">&raquo;</a></li>
-                </c:if>
-                <c:if test="${totalPages eq endPage}">
+				</c:if>
+				<c:if test="${totalPages eq endPage}">
                     <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                </c:if>
+				</c:if>
                 </ul>
         	</div>
         	<!-- ======================== main ======================== -->

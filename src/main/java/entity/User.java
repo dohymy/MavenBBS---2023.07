@@ -12,12 +12,10 @@ public class User {
 	private String profile; 
 	private String addr;
 	
-	public User() { }
 	// update에 사용
 	public User(String uid, String uname, String email, String profile, String addr) {
 		super();
 		this.uid = uid;
-		this.pwd = pwd;
 		this.uname = uname;
 		this.email = email;
 		this.profile = profile;
@@ -33,6 +31,19 @@ public class User {
 		this.profile = profile;
 		this.addr = addr;
 	}
+	
+	public User(String uid, String pwd, String uname, String email, LocalDate regDate, int isDeleted, String profile,
+			String addr) {
+		super();
+		this.uid = uid;
+		this.pwd = pwd;
+		this.uname = uname;
+		this.email = email;
+		this.regDate = regDate;
+		this.isDeleted = isDeleted;
+		this.profile = profile;
+		this.addr = addr;
+	} 
 	
 	public String getUid() {
 		return uid;
@@ -103,20 +114,4 @@ public class User {
 		return "User [uid=" + uid + ", pwd=" + pwd + ", uname=" + uname + ", email=" + email + ", regDate=" + regDate
 				+ ", isDeleted=" + isDeleted + ", profile=" + profile + ", addr=" + addr + "]";
 	}
-
-
-	public User(String uid, String pwd, String uname, String email, LocalDate regDate, int isDeleted, String profile,
-			String addr) {
-		super();
-		this.uid = uid;
-		this.pwd = pwd;
-		this.uname = uname;
-		this.email = email;
-		this.regDate = regDate;
-		this.isDeleted = isDeleted;
-		this.profile = profile;
-		this.addr = addr;
-	} 
-	
-	
 }

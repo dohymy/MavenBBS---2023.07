@@ -17,18 +17,17 @@ import entity.Reply;
  */
 @WebServlet("/reply/*")
 public class ReplyController extends HttpServlet {
-       
+
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String[] uri = request.getRequestURI().split("/");
 		String action = uri[uri.length - 1];
 		HttpSession session = request.getSession();
 		String sessionUid = (String) session.getAttribute("uid");
 		session.setAttribute("menu", "board");
-		
 		BoardDao bDao = new BoardDao();
 		ReplyDao rDao = new ReplyDao();
 		
-		switch (action) {
+		switch(action) {
 		case "write":
 			int bid = Integer.parseInt(request.getParameter("bid"));
 			String uid = request.getParameter("uid");
@@ -36,12 +35,8 @@ public class ReplyController extends HttpServlet {
 			int isMine = (uid.equals(sessionUid)) ? 1 : 0;
 			Reply reply = new Reply(comment, isMine, sessionUid, bid);
 			rDao.insertReply(reply);
-			System.out.println(reply);
 			bDao.increaseReplyCount(bid);
-			response.sendRedirect("/bbs/board/detail?bid=" + bid + "&uid=" + uid);
-			break;
-
-		default:
+			response.sendRedirect("/bbs/board/detail?bid=" + bid + "&uid=" + uid + "&option=DNI");
 			break;
 		}
 	}
