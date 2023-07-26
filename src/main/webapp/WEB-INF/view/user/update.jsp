@@ -39,11 +39,11 @@
 			                    </tr>
 			                    <tr>
 			                        <td><label class="col-form-label">패스워드</label></td>
-			                        <td><input type="password" name="pwd" class="form-control" value="${user.pwd}"></td>
+			                        <td><input type="password" name="pwd" class="form-control"></td>
 			                    </tr>
 			                    <tr>
 			                        <td><label class="col-form-label">패스워드 확인</label></td>
-			                        <td><input type="password" name="pwd2" class="form-control" value="${user.pwd2}"></td>
+			                        <td><input type="password" name="pwd2" class="form-control"></td>
 			                    </tr>
 			                    <tr>
 			                        <td><label class="col-form-label">이메일</label></td>
